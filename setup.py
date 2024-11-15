@@ -32,7 +32,6 @@ setup(
         "ipython",
         "ipykernel",
         "peft",
-        "bitsandbytes",
     ],
     entry_points={
         'console_scripts': [

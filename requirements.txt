@@ -20,4 +20,3 @@ nbconvert
 ipython
 ipykernel
 peft
-bitsandbytes

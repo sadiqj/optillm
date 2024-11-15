@@ -10,7 +10,6 @@ import torch.nn as nn
 import math
 from transformers import AutoModelForCausalLM, AutoTokenizer, PreTrainedModel
 from peft import PeftModel, PeftConfig
-import bitsandbytes as bnb
 from scipy.stats import entropy
 from functools import lru_cache
 import time
@@ -445,23 +444,9 @@ class ModelManager:
         self.device_manager = device_manager
         
     def quantize_model(self, model):
-        """Quantize model to 4-bit precision using bitsandbytes"""
-        def _replace_linear_layers(module):
-            for name, child in module.named_children():
-                if isinstance(child, torch.nn.Linear):
-                    setattr(module, name, bnb.nn.Linear4bit(
-                        child.in_features,
-                        child.out_features,
-                        bias=child.bias is not None,
-                        compute_dtype=torch.float16
-                    ))
-                else:
-                    _replace_linear_layers(child)
-                    
-        _replace_linear_layers(model)
         return model
 
-    def load_base_model(self, model_id: str, quantize: bool = True) -> Tuple[AutoModelForCausalLM, AutoTokenizer]:
+    def load_base_model(self, model_id: str, quantize: bool = False) -> Tuple[AutoModelForCausalLM, AutoTokenizer]:
         def _load_model():
             logger.info(f"Loading base model: {model_id}")
             
